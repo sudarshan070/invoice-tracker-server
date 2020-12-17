@@ -2,6 +2,16 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose')
+
+require('dotenv').config()
+
+const mongoURL = process.env.MONGO_URI
+
+mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+    console.log("connected", err ? err : true);
+})
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
