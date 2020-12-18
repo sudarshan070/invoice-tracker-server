@@ -4,6 +4,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 
 
+// register user
 router.post('/register', async (req, res, next) => {
   try {
     var user = await User.create(req.body)
@@ -22,8 +23,9 @@ router.post('/register', async (req, res, next) => {
   }
 })
 
+
+// login user
 router.post('/login', async (req, res, next) => {
-  // console.log(req.body, 'req.body');
   var { password, email } = req.body
   if (!email || !password) {
     return res.status(400).json({
@@ -34,7 +36,6 @@ router.post('/login', async (req, res, next) => {
 
   try {
     var user = await User.findOne({ email })
-    console.log(user, 'login user');
     if (!user) {
       return res.status(400).json({
         success: false,
