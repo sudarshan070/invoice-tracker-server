@@ -4,6 +4,9 @@ const auth = require('../middleware/auth')
 const User = require('../models/user')
 const Invoice = require('../models/invoice')
 
+
+
+
 // invoice create
 router.post('/create', auth.verifyToken, async (req, res, next) => {
     try {
@@ -43,7 +46,6 @@ router.put('/update/:id', auth.verifyToken, async (req, res, next) => {
 router.delete('/delete/:id', auth.verifyToken, async (req, res, next) => {
     try {
         var invoice = await Invoice.findById(req.params.id)
-        console.log(invoice.userId == req.user.userId)
         if (invoice.userId == req.user.userId) {
             invoice = await Invoice.findByIdAndDelete(invoice.id)
             console.log(user, 'user');
@@ -56,5 +58,16 @@ router.delete('/delete/:id', auth.verifyToken, async (req, res, next) => {
     }
 })
 
+
+// get user invoice
+router.get('/', auth.verifyToken, async (req, res, next) => {
+    try {
+        var user = await User.findById(req.user.userId)
+        var invoice = await Invoice.find({})
+        res.json({ invoice })
+    } catch (error) {
+        next(error)
+    }
+})
 
 module.exports = router
