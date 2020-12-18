@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var bcrypt = require('bcrypt')
 
-var useSchema = new Schema({
+var userSchema = new Schema({
     username: String,
     email: {
         type: String,
@@ -15,15 +15,28 @@ var useSchema = new Schema({
     }
 }, { timestamps: true })
 
-useSchema.pre('save', function (next) {
-    if (this.password && this.isModified("password")) {
-        this.password = bcrypt.hashSync(this.password, 10)
+// userSchema.pre('save', function (next) {
+//     if (this.password && this.isModified("password")) {
+//         this.password = bcrypt.hashSync(this.password, 10)
+//         next()
+//     }
+// })
+
+
+userSchema.pre('save', async function (next) {
+    try {
+        if (this.password && this.isModified('password')) {
+            this.password = await bcrypt.hash(this.password, 10)
+        }
         next()
+    } catch (error) {
+        next(error)
     }
 })
 
-useSchema.method.verifyPassword = function (password) {
+userSchema.method.verifyPassword = function (password) {
+    console.log(password);
     return bcrypt.compareSync(password, this.password)
 }
 
-module.exports = mongoose.model("User", useSchema)
+module.exports = mongoose.model("User", userSchema)

@@ -12,6 +12,9 @@ mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true }, 
     console.log("connected", err ? err : true);
 })
 
+mongoose.set('useCreateIndex', true)
+
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
