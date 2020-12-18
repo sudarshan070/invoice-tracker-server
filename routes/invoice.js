@@ -7,20 +7,21 @@ const Invoice = require('../models/invoice')
 // invoice create
 router.post('/create', auth.verifyToken, async (req, res, next) => {
     try {
-        console.log(req.body, 'body');
-        console.log(req.user.userId, 'req.user.userId');
         req.body.userId = req.user.userId
         var invoice = await Invoice.create(req.body)
-        var user = await User.findByIdAndUpdate(
-            req.user.userId,
-            { $addToSet: { invoice: invoice.id } },
-            { new: true }
-        )
-        res.status(201).json({
-            image: invoice.image,
-            name: invoice.name,
-            amount: invoice.amount
-        })
+        if (invoice) {
+            var user = await User.findByIdAndUpdate(
+                req.user.userId,
+                { $addToSet: { invoiceId: invoice.id } },
+                { new: true }
+            )
+            console.log(user, 'user is here');
+            res.status(201).json({
+                image: invoice.image,
+                name: invoice.name,
+                amount: invoice.amount
+            })
+        }
     } catch (error) {
         next(error)
     }
@@ -31,9 +32,29 @@ router.put('/update/:id', auth.verifyToken, async (req, res, next) => {
     try {
         var updateInvoice = await Invoice.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
         res.json({ updateInvoice })
+
     } catch (error) {
         next(error)
     }
 })
+
+
+// delete invoice
+router.delete('/delete/:id', auth.verifyToken, async (req, res, next) => {
+    try {
+        var invoice = await Invoice.findById(req.params.id)
+        console.log(invoice.userId == req.user.userId)
+        if (invoice.userId == req.user.userId) {
+            invoice = await Invoice.findByIdAndDelete(invoice.id)
+            console.log(user, 'user');
+            res.json({
+                success: 'invoice deleted successfully '
+            })
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 
 module.exports = router

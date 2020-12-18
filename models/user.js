@@ -12,16 +12,12 @@ var userSchema = new Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    invoiceId: [{
+        type: Schema.Types.ObjectId,
+        ref: "Invoice"
+    }]
 }, { timestamps: true })
-
-// userSchema.pre('save', function (next) {
-//     if (this.password && this.isModified("password")) {
-//         this.password = bcrypt.hashSync(this.password, 10)
-//         next()
-//     }
-// })
-
 
 userSchema.pre('save', async function (next) {
     try {
