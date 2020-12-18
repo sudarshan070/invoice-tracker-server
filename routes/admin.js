@@ -3,6 +3,7 @@ var router = express.Router()
 var Admin = require('../models/admin')
 var auth = require('../middleware/auth')
 
+
 // create admin
 router.post('/register', async (req, res, next) => {
     try {
@@ -22,5 +23,34 @@ router.post('/register', async (req, res, next) => {
     }
 })
 
+// admin login
+
+router.post('/login', async (req, res, next) => {
+    var { password, email } = req.body
+    if (!email || !password) {
+        return res.status(400).json({
+            success: false,
+            error: "Email and Password required"
+        })
+    }
+
+    try {
+        var admin = await Admin.findOne({ email })
+        if (!admin) {
+            return res.status(400).json({
+                success: false,
+                error: "Email is wrong"
+            })
+        }
+        var token = await auth.generateJWT(admin)
+        res.status(201).json({
+            email: admin.email,
+            username: admin.username,
+            token
+        })
+    } catch (error) {
+        next(error)
+    }
+})
 
 module.exports = router
