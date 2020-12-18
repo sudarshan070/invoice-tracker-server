@@ -26,4 +26,14 @@ router.post('/create', auth.verifyToken, async (req, res, next) => {
     }
 })
 
+// update invoice
+router.put('/update/:id', auth.verifyToken, async (req, res, next) => {
+    try {
+        var updateInvoice = await Invoice.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
+        res.json({ updateInvoice })
+    } catch (error) {
+        next(error)
+    }
+})
+
 module.exports = router
