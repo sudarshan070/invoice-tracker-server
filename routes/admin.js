@@ -2,7 +2,17 @@ var express = require('express')
 var router = express.Router()
 var Admin = require('../models/admin')
 var auth = require('../middleware/auth')
+var Invoice = require('../models/invoice')
 
+// get all invoice
+router.get('/', auth.verifyToken, async (req, res, next) => {
+    try {
+        var invoice = await Invoice.find({})
+        res.status(201).json({ invoice })
+    } catch (error) {
+        next(error)
+    }
+})
 
 // create admin
 router.post('/register', async (req, res, next) => {
