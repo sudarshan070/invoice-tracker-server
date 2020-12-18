@@ -15,7 +15,7 @@ var adminSchema = new Schema({
     },
 }, { timestamps: true })
 
-userSchema.pre('save', async function (next) {
+adminSchema.pre('save', async function (next) {
     try {
         if (this.password && this.isModified('password')) {
             this.password = await bcrypt.hash(this.password, 10)
@@ -26,8 +26,7 @@ userSchema.pre('save', async function (next) {
     }
 })
 
-userSchema.method.verifyPassword = function (password) {
-    console.log(password);
+adminSchema.method.verifyPassword = function (password) {
     return bcrypt.compareSync(password, this.password)
 }
 

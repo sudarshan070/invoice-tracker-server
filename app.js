@@ -19,6 +19,7 @@ mongoose.set('useCreateIndex', true)
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var invoiceRouter = require('./routes/invoice')
+var adminRouter = require('./routes/admin')
 
 var app = express();
 
@@ -31,5 +32,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/invoice', invoiceRouter)
+app.use('/api/admin', adminRouter)
 
 module.exports = app;
