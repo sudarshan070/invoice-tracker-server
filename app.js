@@ -8,9 +8,9 @@ var cors = require('cors')
 
 require('dotenv').config()
 
-const mongoURL = process.env.MONGO_URI
+const MONGO_URI = `mongodb+srv://spShinde:sudarshan@cluster0.lizcx.mongodb.net/invoice-tracker?retryWrites=true&w=majority`
 
-mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
     console.log("connected", err ? err : true);
 })
 
