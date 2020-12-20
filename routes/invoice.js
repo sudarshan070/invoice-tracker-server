@@ -22,7 +22,8 @@ router.post('/create', auth.verifyToken, async (req, res, next) => {
             res.status(201).json({
                 image: invoice.image,
                 name: invoice.name,
-                amount: invoice.amount
+                amount: invoice.amount,
+                date: invoice.date
             })
         }
     } catch (error) {
