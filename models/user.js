@@ -19,20 +19,20 @@ var userSchema = new Schema({
     }]
 }, { timestamps: true })
 
-userSchema.pre('save', async function (next) {
+
+userSchema.pre("save", async function (next) {
     try {
         if (this.password && this.isModified('password')) {
-            this.password = await bcrypt.hash(this.password, 10)
+            this.password = await bcrypt.hashSync(this.password, 10)
         }
-        next()
+        return next()
     } catch (error) {
         next(error)
     }
 })
 
-userSchema.method.verifyPassword = function (password) {
-    console.log(password);
-    return bcrypt.compareSync(password, this.password)
+userSchema.methods.verifyPassword = async function (password) {
+    return await bcrypt.compare(password, this.password)
 }
 
 module.exports = mongoose.model("User", userSchema)

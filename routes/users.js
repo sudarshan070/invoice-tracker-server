@@ -4,19 +4,11 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 
 
-// register user
-router.get('/', async (req, res, next) => {
-  try {
-    var user = await User.find({})
-    res.json({ user })
-  } catch (error) {
-    next(error)
-  }
-})
 
+// register user
 router.post('/register', async (req, res, next) => {
   try {
-    var user = await User.create(req.body.user)
+    var user = await User.create(req.body)
     var token = await auth.generateJWT(user)
     console.log(user);
     res.status(201).json({
@@ -54,20 +46,32 @@ router.post('/login', async (req, res, next) => {
       })
     }
 
-    // if (!await user.verifyPassword(password)) {
-    //   console.log(user.password, 'user.password');
-    //   console.log(password, 'password in verifyPassword');
-    //   return res.status(400).json({
-    //     success: false,
-    //     error: "Password is wrong"
-    //   })
-    // }
+    console.log(await user.verifyPassword(password), "user is here")
+    if (!await user.verifyPassword(password)) {
+
+      return res.status(400).json({
+        success: false,
+        error: "Password is wrong"
+      })
+    }
+
     var token = await auth.generateJWT(user)
     res.status(201).json({
       email: user.email,
       username: user.username,
       token
     })
+  } catch (error) {
+    next(error)
+  }
+})
+
+
+// get  user
+router.get('/', auth.verifyToken, async (req, res, next) => {
+  try {
+    var user = await User.findById(req.user.userId)
+    res.json({ user })
   } catch (error) {
     next(error)
   }
