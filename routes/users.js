@@ -5,10 +5,20 @@ const auth = require('../middleware/auth')
 
 
 // register user
+router.get('/', async (req, res, next) => {
+  try {
+    var user = await User.find({})
+    res.json({ user })
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.post('/register', async (req, res, next) => {
   try {
-    var user = await User.create(req.body)
+    var user = await User.create(req.body.user)
     var token = await auth.generateJWT(user)
+    console.log(user);
     res.status(201).json({
       email: user.email,
       username: user.username,
@@ -36,6 +46,7 @@ router.post('/login', async (req, res, next) => {
 
   try {
     var user = await User.findOne({ email })
+    console.log(user, 'email');
     if (!user) {
       return res.status(400).json({
         success: false,
