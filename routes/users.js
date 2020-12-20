@@ -70,6 +70,7 @@ router.post('/login', async (req, res, next) => {
 // get  user
 router.get('/', auth.verifyToken, async (req, res, next) => {
   try {
+    console.log(req.user.userId);
     var user = await User.findById(req.user.userId)
     res.json({ user })
   } catch (error) {

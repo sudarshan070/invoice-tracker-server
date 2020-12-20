@@ -5,6 +5,7 @@ const invoicesSchema = new Schema({
     image: String,
     name: String,
     amount: String,
+    date: Date,
     userId: {
         type: Schema.Types.ObjectId,
         ref: "User"
