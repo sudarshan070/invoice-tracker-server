@@ -6,10 +6,10 @@ const invoicesSchema = new Schema({
     name: String,
     amount: String,
     date: Date,
-    userId: {
+    userId: [{
         type: Schema.Types.ObjectId,
         ref: "User"
-    }
+    }]
 
 }, { timestamps: true })
 

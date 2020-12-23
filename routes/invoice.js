@@ -6,6 +6,15 @@ const Invoice = require('../models/invoice')
 
 
 
+// all invoices 
+router.get('/list', auth.verifyToken, async (req, res, next) => {
+    try {
+        var invoices = await Invoice.find({}).populate("userId")
+        res.status(201).json({ invoices })
+    } catch (error) {
+        next(error)
+    }
+})
 
 // invoice create
 router.post('/create', auth.verifyToken, async (req, res, next) => {
@@ -31,6 +40,19 @@ router.post('/create', auth.verifyToken, async (req, res, next) => {
     }
 })
 
+
+// single invoice
+
+router.get('/:id', async (req, res, next) => {
+    try {
+        var getInvoice = await Invoice.findById(req.params.id)
+        res.status(201).json({ getInvoice })
+    } catch (error) {
+        next(error)
+    }
+})
+
+
 // update invoice
 router.put('/update/:id', auth.verifyToken, async (req, res, next) => {
     try {
@@ -47,9 +69,9 @@ router.put('/update/:id', auth.verifyToken, async (req, res, next) => {
 router.delete('/delete/:id', auth.verifyToken, async (req, res, next) => {
     try {
         var invoice = await Invoice.findById(req.params.id)
+        console.log(invoice);
         if (invoice.userId == req.user.userId) {
             invoice = await Invoice.findByIdAndDelete(invoice.id)
-            console.log(user, 'user');
             res.json({
                 success: 'invoice deleted successfully '
             })
@@ -64,11 +86,19 @@ router.delete('/delete/:id', auth.verifyToken, async (req, res, next) => {
 router.get('/', auth.verifyToken, async (req, res, next) => {
     try {
         var user = await User.findById(req.user.userId)
-        var invoice = await Invoice.find({})
-        res.json({ invoice })
+        var invoices = await Invoice.find({})
+        console.log(invoices, 'all invoices');
+        var fil = invoices.filter(e => e.userId)
+        if (user.isAdmin) {
+            res.json(invoices)
+        } else {
+            let userInvoices = invoices.filter(e => (e.userId == user.id))
+            res.json({ userInvoices })
+        }
     } catch (error) {
         next(error)
     }
 })
+
 
 module.exports = router

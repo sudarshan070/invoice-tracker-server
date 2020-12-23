@@ -8,13 +8,15 @@ const auth = require('../middleware/auth')
 // register user
 router.post('/register', async (req, res, next) => {
   try {
-    var user = await User.create(req.body)
+    let userInfo = req.body;
+    var user = await User.create(userInfo)
     var token = await auth.generateJWT(user)
     console.log(user);
     res.status(201).json({
       email: user.email,
       username: user.username,
       password: user.password,
+      isAdmin: user.isAdmin,
       token
     })
   } catch (error) {
@@ -46,9 +48,7 @@ router.post('/login', async (req, res, next) => {
       })
     }
 
-    console.log(await user.verifyPassword(password), "user is here")
     if (!await user.verifyPassword(password)) {
-
       return res.status(400).json({
         success: false,
         error: "Password is wrong"
@@ -59,6 +59,7 @@ router.post('/login', async (req, res, next) => {
     res.status(201).json({
       email: user.email,
       username: user.username,
+      isAdmin: user.isAdmin,
       token
     })
   } catch (error) {
@@ -67,7 +68,7 @@ router.post('/login', async (req, res, next) => {
 })
 
 
-// get  user
+// get user
 router.get('/', auth.verifyToken, async (req, res, next) => {
   try {
     console.log(req.user.userId);

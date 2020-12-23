@@ -8,7 +8,9 @@ var cors = require('cors')
 
 require('dotenv').config()
 
-const MONGO_URI = `mongodb+srv://spShinde:sudarshan@cluster0.lizcx.mongodb.net/invoice-tracker?retryWrites=true&w=majority`
+const MONGO_URI = 'mongodb://localhost:27017/invoiceTracker'
+
+// const MONGO_URI = `mongodb+srv://spShinde:sudarshan@cluster0.lizcx.mongodb.net/invoice-tracker?retryWrites=true&w=majority`
 
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
     console.log("connected", err ? err : true);
@@ -21,7 +23,6 @@ mongoose.set('useCreateIndex', true)
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var invoiceRouter = require('./routes/invoice')
-var adminRouter = require('./routes/admin')
 
 var app = express();
 
@@ -35,6 +36,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/invoice', invoiceRouter)
-app.use('/api/admin', adminRouter)
+
 
 module.exports = app;

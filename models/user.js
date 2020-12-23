@@ -13,6 +13,10 @@ var userSchema = new Schema({
         type: String,
         required: true,
     },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     invoiceId: [{
         type: Schema.Types.ObjectId,
         ref: "Invoice"
